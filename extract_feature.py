@@ -23,12 +23,12 @@ def extract_train_features():
                 features[0].append(feature[:, y].tolist())
             elif df[1][filename] == 'spoof':
                 features[1].append(feature[:, y].tolist())
-    with open('data/train_mfcc_features.json', 'w') as fid:
+    with open('output/MFCC/train_data.json', 'w') as fid:
         json.dump(features, fid)
 
 
-def extract_val_test_features():
-    phrases = ['dev', 'eval']
+def extract_features():
+    phrases = ['train', 'dev', 'eval']
     for phrase in phrases:
         file_dir = 'data/ASVspoof2017_{}'.format(phrase)
         files = os.listdir(file_dir)
@@ -38,9 +38,10 @@ def extract_val_test_features():
             filename = files[i]
             y, sr = librosa.load(os.path.join(file_dir, filename))
             feature = librosa.feature.mfcc(y=y, sr=sr)
-            features.append(feature.tolist())
-        with open('data/{}_mfcc_features.json'.format(phrase), 'w') as fid:
+            feature = [feature[:, x].tolist() for x in range(feature.shape[1])]
+            features.append(feature)
+        with open('output/MFCC/{}.json'.format(phrase), 'w') as fid:
             json.dump(features, fid)
 
 if __name__ == '__main__':
-    extract_train_features()
+    extract_features()

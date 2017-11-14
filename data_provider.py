@@ -4,7 +4,7 @@ import json
 
 train_label_file = 'ASVspoof2017_train.trn.txt'
 dev_label_file = 'ASVspoof2017_dev.trl.txt'
-test_label_file = 'ASVspoof2017_eval_v2_key.trl.txt'
+eval_label_file = 'ASVspoof2017_eval_v2_key.trl.txt'
 
 
 class DataProvider(object):
@@ -19,7 +19,7 @@ class DataProvider(object):
         return data
 
     def get_data(self, phase):
-        assert phase in ['train', 'dev', 'test']
+        assert phase in ['train', 'dev', 'eval']
         feature_file = os.path.join('data/features', self._feature_name, '{}.json'.format(phase))
         with open(feature_file) as fid:
             data = json.load(fid)
@@ -31,8 +31,8 @@ class DataProvider(object):
             label_file = train_label_file
         elif phase == 'dev':
             label_file = dev_label_file
-        elif phase == 'test':
-            label_file = test_label_file
+        elif phase == 'eval':
+            label_file = eval_label_file
         df = pd.read_csv(os.path.join('data/labels', label_file),
                          sep=' ',
                          header=None,
@@ -49,7 +49,7 @@ class DataProvider(object):
         """
 
         :param batch_size:
-        :param phase: train, dev or test
+        :param phase: train, dev or eval
         :return:
         """
         raise NotImplementedError
