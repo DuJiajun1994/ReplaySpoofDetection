@@ -3,13 +3,16 @@ import os
 import librosa
 import pandas as pd
 
+train_label_file = 'ASVspoof2017_train.trn.txt'
+dev_label_file = 'ASVspoof2017_dev.trl.txt'
+eval_label_file = 'ASVspoof2017_eval_v2_key.trl.txt'
+
 
 def extract_train_features():
     file_dir = 'data/ASVspoof2017_train'
     files = os.listdir(file_dir)
     features = [[], []]
-    train_label_file = 'data/labels/ASVspoof2017_train.trn.txt'
-    df = pd.read_csv(train_label_file,
+    df = pd.read_csv(os.path.join('data/labels', train_label_file),
                      sep=' ',
                      header=None,
                      index_col=0)
@@ -28,10 +31,20 @@ def extract_train_features():
 
 
 def extract_features():
-    phrases = ['train', 'dev', 'eval']
-    for phrase in phrases:
-        file_dir = 'data/ASVspoof2017_{}'.format(phrase)
-        files = os.listdir(file_dir)
+    phases = ['train', 'dev', 'eval']
+    for phase in phases:
+        if phase == 'train':
+            label_file = train_label_file
+        elif phase == 'dev':
+            label_file = dev_label_file
+        elif phase == 'eval':
+            label_file = eval_label_file
+        df = pd.read_csv(os.path.join('data/labels', label_file),
+                         sep=' ',
+                         header=None,
+                         index_col=0)
+        file_dir = 'data/ASVspoof2017_{}'.format(phase)
+        files = list(df.index)
         features = []
         for i in range(len(files)):
             print(i)
@@ -40,7 +53,7 @@ def extract_features():
             feature = librosa.feature.mfcc(y=y, sr=sr)
             feature = [feature[:, x].tolist() for x in range(feature.shape[1])]
             features.append(feature)
-        with open('output/MFCC/{}.json'.format(phrase), 'w') as fid:
+        with open('output/MFCC/{}.json'.format(phase), 'w') as fid:
             json.dump(features, fid)
 
 if __name__ == '__main__':

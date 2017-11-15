@@ -24,9 +24,6 @@ class DataProvider(object):
         with open(feature_file) as fid:
             data = json.load(fid)
 
-        file_dir = 'data/ASVspoof2017_{}'.format(phase)
-        filenames = os.listdir(file_dir)
-
         if phase == 'train':
             label_file = train_label_file
         elif phase == 'dev':
@@ -37,13 +34,15 @@ class DataProvider(object):
                          sep=' ',
                          header=None,
                          index_col=0)
+        files = list(df.index)
+
         labels = []
-        for filename in filenames:
+        for filename in files:
             if df[1][filename] == 'genuine':
                 labels.append(0)
             elif df[1][filename] == 'spoof':
                 labels.append(1)
-        return data, labels, filenames
+        return data, labels, files
 
     def next_batch(self, batch_size, phase):
         """
