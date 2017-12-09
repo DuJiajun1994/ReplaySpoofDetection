@@ -35,14 +35,7 @@ class DataProvider(object):
                          header=None,
                          index_col=0)
         files = list(df.index)
-
-        labels = []
-        for filename in files:
-            if df[1][filename] == 'genuine':
-                labels.append(0)
-            elif df[1][filename] == 'spoof':
-                labels.append(1)
-        return data, labels, files
+        return data, files
 
     def next_batch(self, batch_size, phase):
         """

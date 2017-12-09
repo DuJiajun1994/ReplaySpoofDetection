@@ -47,8 +47,8 @@ def extract_features():
         files = list(df.index)
         features = []
         for i in range(len(files)):
-            print(i)
             filename = files[i]
+            print('{} {}'.format(i, filename))
             y, sr = librosa.load(os.path.join(file_dir, filename))
             feature = librosa.feature.mfcc(y=y, sr=sr)
             feature = [feature[:, x].tolist() for x in range(feature.shape[1])]
