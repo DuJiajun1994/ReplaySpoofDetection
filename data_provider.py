@@ -12,15 +12,16 @@ class DataProvider(object):
         assert feature_name in ['MFCC']
         self._feature_name = feature_name
 
-    def get_train_data(self):
-        feature_file = os.path.join('data/features', self._feature_name, 'train_data.json')
+    def get_train_data(self, phase):
+        assert phase in ['train', 'train_dev']
+        feature_file = os.path.join('output', self._feature_name, 'train', '{}.json'.format(phase))
         with open(feature_file) as fid:
             data = json.load(fid)
         return data
 
-    def get_data(self, phase):
+    def get_eval_data(self, phase):
         assert phase in ['train', 'dev', 'eval']
-        feature_file = os.path.join('data/features', self._feature_name, '{}.json'.format(phase))
+        feature_file = os.path.join('output', self._feature_name, 'eval', '{}.json'.format(phase))
         with open(feature_file) as fid:
             data = json.load(fid)
 

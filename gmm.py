@@ -19,15 +19,15 @@ def _load_mixture(label):
     return mixture
 
 
-def train_model(provider):
-    data = provider.get_train_data()
+def train_model(provider, phase):
+    data = provider.get_train_data(phase)
     _train_mixture(data[0], 0)
     _train_mixture(data[1], 1)
 
 
 def eval_model(provider, phase):
     assert phase in ['train', 'dev', 'eval']
-    data, files = provider.get_data(phase)
+    data, files = provider.get_eval_data(phase)
     mixture0 = _load_mixture(0)
     mixture1 = _load_mixture(1)
     df = pd.DataFrame(columns=['filename', 'score'])
@@ -42,7 +42,7 @@ def eval_model(provider, phase):
 
 if __name__ == '__main__':
     provider = DataProvider('MFCC')
-    train_model(provider)
+    train_model(provider, 'train_dev')
     eval_model(provider, 'train')
     eval_model(provider, 'dev')
     eval_model(provider, 'eval')
