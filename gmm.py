@@ -30,13 +30,14 @@ def eval_model(provider, phase):
     data, labels, files = provider.get_data(phase)
     mixture0 = _load_mixture(0)
     mixture1 = _load_mixture(1)
-    df = pd.DataFrame(columns=['filename', 'label', 'score_0', 'score_1'])
+    df = pd.DataFrame(columns=['filename', 'score'])
     for i in range(len(data)):
-        score0 = mixture0.score(data[i])
-        score1 = mixture1.score(data[i])
-        df.loc[i] = [files[i], labels[i], score0, score1]
+        print(i)
+        genuine_score = mixture0.score(data[i])
+        spoof_score = mixture1.score(data[i])
+        df.loc[i] = [files[i], spoof_score - genuine_score]
     save_file = 'output/{}_result.csv'.format(phase)
-    df.to_csv(save_file, index=False)
+    df.to_csv(save_file, sep=' ', header=False, index=False)
 
 
 if __name__ == '__main__':
